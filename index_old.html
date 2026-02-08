@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine? 💗</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-pink: #ff4d6d;
+            --soft-pink: #fff0f3;
+            --hover-pink: #ff758f;
+            --text-color: #590d22;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #fff0f3 0%, #ffe3e8 100%);
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Floating Hearts Background */
+        .bg-hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            color: rgba(255, 77, 109, 0.15);
+            font-size: 2rem;
+            animation: float 6s linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) scale(0.5);
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: translateY(-10vh) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            text-align: center;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.1);
+            backdrop-filter: blur(5px);
+            border: 2px solid white;
+            transition: all 0.5s ease;
+            max-width: 90%;
+        }
+
+        h1 {
+            color: var(--text-color);
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            line-height: 1.2;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            /* For the runaway button */
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-yes {
+            background-color: var(--primary-pink);
+            color: white;
+        }
+
+        .btn-yes:hover {
+            background-color: var(--hover-pink);
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 77, 109, 0.3);
+        }
+
+        .btn-no {
+            background-color: #fff0f3;
+            color: var(--primary-pink);
+            border: 2px solid var(--primary-pink);
+            position: relative;
+            /* Needs to be relative initially, absolute when moving */
+        }
+
+        .btn-no:hover {
+            background-color: #ffe3e8;
+        }
+
+        /* Success Message Styles */
+        .success-message {
+            display: none;
+            animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .success-text {
+            color: var(--text-color);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .sub-text {
+            color: #888;
+            font-size: 1.2rem;
+        }
+
+        /* Confetti Canvas */
+        #confetti {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 20;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg-hearts" id="bgHearts"></div>
+
+    <div class="container" id="mainContainer">
+        <h1>Will you be my Valentine? 💗</h1>
+        <div class="buttons">
+            <button class="btn-yes" id="yesBtn">Yes 💕</button>
+            <button class="btn-no" id="noBtn">No 🙅‍♀️</button>
+        </div>
+    </div>
+
+    <div class="container success-message" id="successContainer">
+        <h1 class="success-text">Yayyy 💖 I knew you’d say yes!</h1>
+        <p class="sub-text">Best Valentine ever 🥰💐</p>
+    </div>
+
+    <canvas id="confetti"></canvas>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const mainContainer = document.getElementById('mainContainer');
+        const successContainer = document.getElementById('successContainer');
+        const bgHearts = document.getElementById('bgHearts');
+
+        // Create background hearts
+        function createHearts() {
+            const symbols = ['❤', '💖', '💕', '💗'];
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = Math.random() * 3 + 4 + 's';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                bgHearts.appendChild(heart);
+            }
+        }
+        createHearts();
+
+        // Runaway "No" Button Logic
+        function moveButton() {
+            // Get button dimensions
+            // Use getBoundingClientRect for accurate sizing including transforms if any (though we reset position)
+            const rect = noBtn.getBoundingClientRect();
+            const width = rect.width;
+            const height = rect.height;
+
+            // Safe distance from screen edges
+            const padding = 30;
+
+            // Calculate available viewport area
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+
+            // Calculate max allowed positions (left and top)
+            // Ensure strictly positive range
+            const maxX = Math.max(0, viewportWidth - width - padding);
+            const maxY = Math.max(0, viewportHeight - height - padding);
+
+            // Generate random position within safe bounds [padding, maxX]
+            // We use padding as min to avoid being flushed against top/left edge
+            const randomX = Math.random() * (maxX - padding) + padding;
+            const randomY = Math.random() * (maxY - padding) + padding;
+
+            // Apply new position
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+
+            // Ensure high z-index so it doesn't get covered
+            noBtn.style.zIndex = '1000';
+        }
+
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('touchstart', moveButton); // For mobile touches
+        noBtn.addEventListener('click', moveButton); // Just in case they click fast
+
+        // Success Logic
+        yesBtn.addEventListener('click', () => {
+            mainContainer.style.display = 'none';
+            successContainer.style.display = 'block';
+            startConfetti();
+        });
+
+
+        // Simple Confetti Implementation
+        const canvas = document.getElementById('confetti');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particles = [];
+        const colors = ['#ff4d6d', '#ff758f', '#ffb3c1', '#ffd6ff', '#e0aaff'];
+
+        function ConfettiParticle() {
+            this.x = Math.random() * canvas.width;
+            this.y = -20;
+            this.size = Math.random() * 8 + 4;
+            this.speedY = Math.random() * 3 + 2;
+            this.speedX = Math.random() * 2 - 1;
+            this.color = colors[Math.floor(Math.random() * colors.length)];
+            this.rotation = Math.random() * 360;
+        }
+
+        ConfettiParticle.prototype.update = function () {
+            this.y += this.speedY;
+            this.x += this.speedX;
+            this.rotation += 2;
+        }
+
+        ConfettiParticle.prototype.draw = function () {
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.rotation * Math.PI / 180);
+            ctx.fillStyle = this.color;
+            ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+            ctx.restore();
+        }
+
+        function startConfetti() {
+            // Spawn particles
+            for (let i = 0; i < 150; i++) {
+                setTimeout(() => {
+                    particles.push(new ConfettiParticle());
+                }, i * 5);
+            }
+            animateConfetti();
+        }
+
+        function animateConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach((p, index) => {
+                p.update();
+                p.draw();
+                if (p.y > canvas.height) {
+                    particles.splice(index, 1);
+                }
+            });
+
+            if (particles.length > 0) {
+                requestAnimationFrame(animateConfetti);
+            }
+        }
+
+        // Handle resize for canvas
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+    </script>
+</body>
+
+</html>

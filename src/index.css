@@ -1,0 +1,189 @@
+:root {
+  --primary-pink: #ff4d6d;
+  --soft-pink: #fff0f3;
+  --hover-pink: #ff758f;
+  --text-color: #590d22;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #fff0f3 0%, #ffe3e8 100%);
+  font-family: 'Poppins', sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Floating Hearts Background */
+.bg-hearts {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.heart {
+  position: absolute;
+  color: rgba(255, 77, 109, 0.15);
+  font-size: 2rem;
+  animation: float 6s linear infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(100vh) scale(0.5);
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: translateY(-10vh) scale(1.2);
+    opacity: 0;
+  }
+}
+
+.container {
+  text-align: center;
+  z-index: 10;
+  padding: 3rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(255, 77, 109, 0.1);
+  border: 2px solid white;
+  transition: all 0.5s ease;
+  max-width: 90%;
+  width: 600px;
+  position: relative;
+  /* Limit width */
+}
+
+.container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(5px);
+  border-radius: 20px;
+  z-index: -1;
+}
+
+.valentine-img {
+  max-width: 100%;
+  max-height: 250px;
+  object-fit: cover;
+  border-radius: 15px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.penguin-img {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 15px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  color: var(--text-color);
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  line-height: 1.2;
+}
+
+.buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  /* position: relative; Removed to allow fixed positioning of No button */
+}
+
+button {
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-yes {
+  background-color: var(--primary-pink);
+  color: white;
+}
+
+.btn-yes:hover {
+  background-color: var(--hover-pink);
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(255, 77, 109, 0.3);
+}
+
+.btn-no {
+  background-color: #fff0f3;
+  color: var(--primary-pink);
+  border: 2px solid var(--primary-pink);
+  transition: all 0.2s ease;
+  /* Smooth movement */
+  cursor: not-allowed;
+  /* Position is handled by inline styles in React */
+}
+
+.btn-no:hover {
+  background-color: #ffe3e8;
+}
+
+/* Success Message Styles */
+.success-message {
+  animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.success-text {
+  color: var(--text-color);
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.sub-text {
+  color: #888;
+  font-size: 1.2rem;
+}
+
+/* Confetti Canvas */
+#confetti {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 20;
+}
